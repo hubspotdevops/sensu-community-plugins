@@ -19,8 +19,8 @@ def get_gdbm_db():
 def grok_df():
   ret = {}
   for partition in psutil.disk_partitions():
-    capacity = psutil.disk_usage(partition[0][0]).percent
-    ret[partition[0][0]] = capacity
+    capacity = psutil.disk_usage(partition.mountpoint).percent
+    ret[partition.mountpoint] = capacity
 
   return ret
 
