@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.6
 # Try to estimate the time at which we will run out of disk space
 # based on day-over-day usage and make some noise if it looks like
 # we have <48h before we run out.  Should run ONCE A DAY.  
