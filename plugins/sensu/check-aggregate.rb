@@ -52,6 +52,7 @@ class CheckAggregate < Sensu::Plugin::Check::CLI
     :short => "-A SECONDS",
     :long => "--age SECONDS",
     :description => "Minimum aggregate age in SECONDS, time since check request issued",
+    :proc => proc {|a| a.to_i },
     :default => 30
 
   option :summarize,
