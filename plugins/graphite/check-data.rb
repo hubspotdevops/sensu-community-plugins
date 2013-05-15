@@ -9,6 +9,13 @@ require 'rubygems' if RUBY_VERSION < '1.9.0'
 require 'sensu-plugin/check/cli'
 require 'json'
 require 'open-uri'
+
+#Bypass known issue with ruby openssl
+#https://gist.github.com/mislav/5026283
+#http://stackoverflow.com/questions/1113422/how-to-bypass-ssl-certificate-verification-in-open-uri
+require 'openssl'
+OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
+
 class CheckGraphiteData < Sensu::Plugin::Check::CLI
 
   option :target,
@@ -50,6 +57,16 @@ class CheckGraphiteData < Sensu::Plugin::Check::CLI
     :long => '--age SECONDS',
     :proc => proc{|arg| arg.to_i }
 
+  option :user,
+    :short => "-u USER",
+    :long => "--user USER",
+    :description => "Graphite LDAP USER"
+
+  option :password,
+    :short => "-p PASSOWRD",
+    :long => "--password PASSWORD",
+    :description => "Graphite LDAP PASSWORD"
+
   option :hostname_sub,
     :description => 'Character used to replace periods (.) in hostname (default: _)',
     :short => '-s CHARACTER',
@@ -86,9 +103,13 @@ class CheckGraphiteData < Sensu::Plugin::Check::CLI
   def retreive_data
     unless(@raw_data)
       begin
-        url = "http://#{config[:server]}/render?format=json&target=#{formatted_target}"
+        url = "https://#{config[:server]}/render?format=json&target=#{formatted_target}"
         uri = URI.parse(URI.encode(url.strip))
-        handle = open(uri)
+        if config[:user]
+          handle = open(uri,:http_basic_authentication=>[config[:user],config[:password]])
+        else
+          handle = open(uri)
+        end
         #FIXME
         #This is not cool. only parse and process the first one, i could be getting an array back.
         @raw_data = JSON.parse(handle.gets).first
