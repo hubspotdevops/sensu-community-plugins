@@ -10,12 +10,11 @@ require 'sensu-plugin/check/cli'
 require 'json'
 require 'open-uri'
 
-#Bypass error with ruby openssl
+#Bypass known issue with ruby openssl
+#https://gist.github.com/mislav/5026283
+#http://stackoverflow.com/questions/1113422/how-to-bypass-ssl-certificate-verification-in-open-uri
 require 'openssl'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
-
-
-
 
 class CheckGraphiteData < Sensu::Plugin::Check::CLI
 
