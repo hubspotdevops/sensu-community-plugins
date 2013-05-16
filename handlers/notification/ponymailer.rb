@@ -36,7 +36,7 @@ class PonyMailer < Sensu::Handler
         mailOptions = {
             :subject => "Sensu Monitoring Alert: #{action_to_string} :: #{short_name}",
             :from => "#{settings['ponymailer']['fromname']} <#{settings['ponymailer']['from']}>",
-            :via => :smtp,
+            :via => :sendmail,
             :arguments => '',
             :via_options => {
                 :address => settings['ponymailer']['hostname'],
